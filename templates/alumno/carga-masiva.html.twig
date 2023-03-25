@@ -1,0 +1,13 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block main %}
+
+<h3>Carga masiva de alumnos</h3>
+<div class="row mt-4">
+    <p>Seleccione un archivo excel con la lista de alumnos a registrar masivamente.</p>
+    <div class="col-md-4">
+        {% form_theme form '@EasyAdmin/crud/form_theme.html.twig' %}
+        {{ form(form) }}    
+    </div>
+</div>
+{% endblock %}
