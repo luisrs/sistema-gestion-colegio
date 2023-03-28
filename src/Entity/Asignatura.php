@@ -25,9 +25,13 @@ class Asignatura
     #[ORM\OneToMany(mappedBy: 'asignatura', targetEntity: CursoAsignatura::class, cascade : ['persist'])]
     private Collection $cursoAsignaturas;
 
+    #[ORM\OneToMany(mappedBy: 'asignatura', targetEntity: NotaAlumno::class)]
+    private Collection $notasAlumnos;
+
     public function __construct()
     {
         $this->cursoAsignaturas = new ArrayCollection();
+        $this->notasAlumnos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,4 +97,42 @@ class Asignatura
     {
         return $this->nombre;
     }
+
+    public function toArray(){
+        return  [
+            'id' => $this->getId(),
+            'nombre' => $this->getNombre()
+        ];
+    }
+
+    /**
+     * @return Collection<int, NotaAlumno>
+     */
+    public function getNotasAlumnos(): Collection
+    {
+        return $this->notasAlumnos;
+    }
+
+    public function addNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if (!$this->notasAlumnos->contains($notasAlumno)) {
+            $this->notasAlumnos->add($notasAlumno);
+            $notasAlumno->setAsignatura($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if ($this->notasAlumnos->removeElement($notasAlumno)) {
+            // set the owning side to null (unless already changed)
+            if ($notasAlumno->getAsignatura() === $this) {
+                $notasAlumno->setAsignatura(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

@@ -28,10 +28,14 @@ class Curso
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable:true)]
     private ?\DateTimeInterface $fechaCreacion = null;
 
+    #[ORM\OneToMany(mappedBy: 'curso', targetEntity: NotaAlumno::class)]
+    private Collection $notasAlumnos;
+
     public function __construct()
     {
         $this->cursoAsignaturas = new ArrayCollection();
         $this->alumnos = new ArrayCollection();
+        $this->notasAlumnos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,6 +128,43 @@ class Curso
     public function setFechaCreacion(\DateTimeInterface $fechaCreacion): self
     {
         $this->fechaCreacion = $fechaCreacion;
+
+        return $this;
+    }
+
+    public function toArray(){
+        return  [
+            'id' => $this->getId(),
+            'nombre' => $this->getNombre()
+        ];
+    }
+
+    /**
+     * @return Collection<int, NotaAlumno>
+     */
+    public function getNotasAlumnos(): Collection
+    {
+        return $this->notasAlumnos;
+    }
+
+    public function addNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if (!$this->notasAlumnos->contains($notasAlumno)) {
+            $this->notasAlumnos->add($notasAlumno);
+            $notasAlumno->setCurso($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if ($this->notasAlumnos->removeElement($notasAlumno)) {
+            // set the owning side to null (unless already changed)
+            if ($notasAlumno->getCurso() === $this) {
+                $notasAlumno->setCurso(null);
+            }
+        }
 
         return $this;
     }

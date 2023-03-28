@@ -161,8 +161,8 @@ class CursoAsignatura
         }
 
         return  [
-            'curso' => $this->getCurso()->getNombre(),
-            'asignatura' => $this->getAsignatura()->getNombre(),
+            'curso' => $this->getCurso()->toArray(),
+            'asignatura' => $this->getAsignatura()->toArray(),
             'alumnos' => array_map(function($alumno){
                 return [
                     'id' => $alumno->getId(),

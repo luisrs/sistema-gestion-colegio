@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AlumnoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +43,14 @@ class Alumno
     #[ORM\ManyToOne(inversedBy: 'alumnos')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Curso $curso = null;
+
+    #[ORM\OneToMany(mappedBy: 'alumno', targetEntity: NotaAlumno::class, orphanRemoval: true)]
+    private Collection $notas;
+
+    public function __construct()
+    {
+        $this->notas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -144,6 +154,36 @@ class Alumno
     public function setCurso(?Curso $curso): self
     {
         $this->curso = $curso;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NotaAlumno>
+     */
+    public function getNotas(): Collection
+    {
+        return $this->notas;
+    }
+
+    public function addNota(NotaAlumno $nota): self
+    {
+        if (!$this->notas->contains($nota)) {
+            $this->notas->add($nota);
+            $nota->setAlumno($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNota(NotaAlumno $nota): self
+    {
+        if ($this->notas->removeElement($nota)) {
+            // set the owning side to null (unless already changed)
+            if ($nota->getAlumno() === $this) {
+                $nota->setAlumno(null);
+            }
+        }
 
         return $this;
     }

@@ -24,7 +24,7 @@ class Nota
     #[ORM\JoinColumn(nullable: true)]
     private ?Alumno $alumno = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nombre = null;
 
     #[ORM\Column]

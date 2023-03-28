@@ -21,9 +21,13 @@ class Periodo
     #[ORM\OneToMany(mappedBy: 'periodo', targetEntity: Nota::class)]
     private Collection $notas;
 
+    #[ORM\OneToMany(mappedBy: 'periodo', targetEntity: NotaAlumno::class)]
+    private Collection $notasAlumnos;
+
     public function __construct()
     {
         $this->notas = new ArrayCollection();
+        $this->notasAlumnos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,5 +80,35 @@ class Periodo
     public function __toString()
     {
         return $this->nombre;
+    }
+
+    /**
+     * @return Collection<int, NotaAlumno>
+     */
+    public function getNotasAlumnos(): Collection
+    {
+        return $this->notasAlumnos;
+    }
+
+    public function addNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if (!$this->notasAlumnos->contains($notasAlumno)) {
+            $this->notasAlumnos->add($notasAlumno);
+            $notasAlumno->setPeriodo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotasAlumno(NotaAlumno $notasAlumno): self
+    {
+        if ($this->notasAlumnos->removeElement($notasAlumno)) {
+            // set the owning side to null (unless already changed)
+            if ($notasAlumno->getPeriodo() === $this) {
+                $notasAlumno->setPeriodo(null);
+            }
+        }
+
+        return $this;
     }
 }
